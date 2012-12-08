@@ -1,5 +1,4 @@
 #include "Graph.h"
-using namespace std;
 
 Graph::Graph ( ) {
      graphTable = NULL;
@@ -11,76 +10,13 @@ Graph::~Graph ( ) {
      clear ();
 }
 
-int Graph::read ( string filename ) {
-     try {
-          ifstream graphFile ( filename.c_str() );
-          
-          if(graphFile.is_open()){
-               int i = 0, b = 0, edgesFound = 0;
-               graphNodes = getNumber ( graphFile ); //Grab node amount
-               graphEdges = getNumber ( graphFile ); //Grab edge amount
-               
-               create ( graphNodes ); //create graphTable based on node amount
-               
-               //run through and add edges to graphTable
-               while( !graphFile.eof ( ) ){
-                    if ( (i = getNumber(graphFile)) == -1 ) {
-                         break;
-                    }
-                    if ( !(b = getNumber(graphFile)) == -1 ) {
-                         break;
-                    }
-                    graphTable[i][b] = 1;
-                    graphTable[b][i] = 1;
-                    edgesFound ++;
-               }
-               
-               graphFile.close();
-               return 1;
-          } else {
-               cout<<"File could not be found.\n";
-          }
-          return 1;
-     } catch ( ... ) {
-          return 0;
-     }
-}
-
-/*
-     Print out ascii version of graph
-*/
-int Graph::write ( string filename ) {
-     try {
-          ofstream graphFile ( filename.c_str() );
-         
-          graphFile << graphNodes << " " << graphEdges << endl; 
-          
-          /*
-               Loop through graph and set each link possible
-          */
-          for ( int i = 0; i < graphNodes; i++ ) {
-               for ( int b = 0; b < graphNodes; b++ ) {
-                    if ( graphTable[i][b] == 1) {
-                         graphTable[i][b] = 0;
-                         graphTable[b][i] = 0;
-                         graphFile << i << " " << b << endl;
-                    }
-               }
-          }
-          graphFile.close ();
-          return 1;
-     } catch ( ... ) {
-          return 0;
-     }
-}
-
 int Graph::create ( int nodes ) {
      try {
           /*
                We need to clear out any previous created graphTables
           */
           
-          clear ( );
+          //clear ( );
           
           /*
                Set graphNodes to nodes and reset graphEdges.
@@ -92,7 +28,7 @@ int Graph::create ( int nodes ) {
           for ( int i = 0; i < graphNodes; i++ ) {
                graphTable[i] = new int[graphNodes];    
                for ( int b = 0; b < graphNodes; b++ ) {
-                    graphTable[i][b] = -1;
+                    graphTable[i][b] = 0;
                }
           }
           
@@ -103,21 +39,44 @@ int Graph::create ( int nodes ) {
 }
 
 /*
+     Will set an edge in the graphTable;
+*/
+void Graph::setEdge ( int from , int to ) {
+     graphEdges++;
+     graphTable[from][to] = 1;
+     graphTable[to][from] = 1;
+}
+/*
+     Remove an edge between from and to
+*/
+void Graph::removeEdge ( int from , int to ) {
+     graphEdges--;
+     graphTable[from][to] = 0;
+     graphTable[to][from] = 0;
+}
+/*
+     Check if there is an edge between FROM->TO
+*/
+int Graph::getEdge ( int from , int to ) {
+     return graphTable[from][to]==1;
+}
+
+/*
      Generate graph of nodes*nodes
      This will create a multi-dimensioanl array of [nodes][nodes] size.   
 */
 int Graph::generateEdges ( ) {
      try {
           for ( int i = 0; i < graphNodes; i++ ) {
-               for ( int b = 0; b < graphNodes; b++ ) {
+               for ( int b = i; b < graphNodes; b++ ) {
                     /*
                          Run random to figure out if we set an edge at this location and then flip indexes to set it for both nodes 
                     */
-                    if ( i != b && graphTable[i][b] == -1 ) {
-                         graphTable[i][b] = (rand () % 2 ? 1 : 0 );
-                         graphTable[b][i] = graphTable[i][b];
-                         if ( graphTable[i][b] ) {
-                              graphEdges++;
+                    if ( i != b && getEdge ( i , b ) ) {
+                         if ( rand () % 2 ) {
+                              setEdge ( i , b );
+                         } else {
+                              removeEdge ( i , b );
                          }
                     }
                }
@@ -151,31 +110,61 @@ int Graph::clear ( ) {
           return 0;
      }
 }
+/*
+     Get Graph Edge count
+*/
+int Graph::edges ( ) {
+     return edges ( );
+}
+/*
+     Get Graph Size
+*/
+int Graph::size ( ) {
+     return graphNodes;
+}
 
-long Graph::getNumber ( ifstream &file ) {
-       string number = "";
-       char c = file.get();
-       if ( !file.good() ) {
-          return -1;
-       }
-       while ( c != ' ' && c != '\n' && c!='\r' ) {
-          number += c;
-          c = file.get();
-       }
-       cout << "Num:" << number <<endl;
-       return atoi ( number.c_str () );
+int Graph::checkConnectivity ( ) {
+     int * graphCheck = new int[graphNodes];
+     for ( int i = 0; i < graphNodes; i ++ ) {
+          graphCheck[i] = -1;
+     }
+     for ( int i = 0; i < graphNodes; i ++ ) {
+
+          checkLocation ( i , graphCheck );
+          if ( graphCheck[i] == 0 ) {
+               return 0;
+          }
+     }
+     delete [] graphCheck;
+
+     return 1;
+}
+
+void Graph::checkLocation ( int from, int *&graphCheck ) {
+     int edge = 0;
+     graphCheck[from] = 0;
+
+     for ( int v =  0; v < graphNodes; v++ ) {
+          if ( v == from ) continue;
+          if ( getEdge ( from , v ) == 1 && graphCheck[v] == -1 ) {
+               edge = 1;
+               checkLocation ( v , graphCheck );
+          } else
+          if ( graphCheck[v] ==  1 ) {
+               edge = 1;
+          }
+     }
+     graphCheck[from] = edge;
 }
 
 string Graph::toString ( ) {
      stringstream outputParser;
      for ( int i = 0; i < graphNodes; i++ ) {
-          for ( int b = 0; b < graphNodes; b++ ) {
-               if ( b != i && graphTable[i][b] == 1 ) {
-                    outputParser << i << " " << b << endl;
-                    graphTable[b][i] = 0;
+          for ( int b = i; b < graphNodes; b++ ) {
+               if ( b != i && getEdge ( i , b ) >= 1 ) {
+                    outputParser << i << " " << b << " -> " << getEdge ( i , b ) << endl;
                }
           }
      }
      return outputParser.str();
 }
-

@@ -1,5 +1,7 @@
 #include <iostream>
 #include "Graph.h"
+#include "GraphIO.h"
+#include "GraphRouter.h"
 
 using namespace std;
 
@@ -12,9 +14,11 @@ int main ( int argc, char ** argv ) {
      string fileName = argv[2];
      srand ( atoi( seedNumber.c_str() ) );
      
-     Graph graph;
+     GraphIO graphIO;
+     GraphRouter * graphRouter = (GraphRouter*)&graphIO; //We just want to reuse the graph so we will create a router based off its information once it's loaded in.
      
      
+     /*
      if ( !graph.create ( 10 ) ) {
           cout << "Unable to create graph" << endl;
      }
@@ -31,15 +35,28 @@ int main ( int argc, char ** argv ) {
           cout << "Unable to save graph to " << fileName <<endl;
      }
      
-     cout << "Graph was saved to graph.txt" << endl;
-     
-     if ( !graph.read ( fileName ) ) {
+     cout << "Graph was saved to " << fileName << endl;
+     */
+
+     if ( !graphIO.read ( fileName ) ) {
           cout << "Unable to read graph from " << fileName << endl;
+          exit ( 0 );
      }
      
-     cout << "Graph was read from graph.txt" <<endl;
-     
-     
-     cout << graph.toString() << endl;
+     cout << "Graph was read from " << fileName <<endl;
+    
+
+     if ( !graphIO.checkConnectivity ( ) ) {
+          cout << "Graph wasn't completely connected " << fileName <<endl;
+          exit ( 0 );
+     }
+
+     cout << "Graph is completely connected " << fileName <<endl;
+
+     if ( !graphRouter->checkConnectivity ( ) ) {
+          cout << "Unable to call graph from inside graphRouter" << endl;
+          exit ( 0 );
+     }
+     cout << "graphRouter is up to date" << endl;
      return 0;
 }
