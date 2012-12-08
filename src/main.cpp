@@ -16,7 +16,7 @@ int main ( int argc, char ** argv ) {
      
      GraphIO graphIO;
      GraphRouter * graphRouter = (GraphRouter*)&graphIO; //We just want to reuse the graph so we will create a router based off its information once it's loaded in.
-     
+
      
      /*
      if ( !graph.create ( 10 ) ) {
@@ -53,10 +53,7 @@ int main ( int argc, char ** argv ) {
 
      cout << "Graph is completely connected " << fileName <<endl;
 
-     if ( !graphRouter->checkConnectivity ( ) ) {
-          cout << "Unable to call graph from inside graphRouter" << endl;
-          exit ( 0 );
-     }
-     cout << "graphRouter is up to date" << endl;
+     
+     
      return 0;
 }

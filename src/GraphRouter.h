@@ -7,9 +7,14 @@ class GraphRouter : public Graph {
 	public:
 		GraphRouter ( );
 		~GraphRouter ( );
-	private:
-		
+	
+		void send ( int , int , void * );
+		void onReceive ( int , int , void * );
 
+	private:
+		int ** graphRoutes;
+
+		void buildRouteTable ( );
 };
 
 
