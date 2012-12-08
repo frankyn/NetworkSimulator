@@ -15,3 +15,5 @@
 src/.DS_Store
 
 graph.txt
+
+build/NetworkSimulator
