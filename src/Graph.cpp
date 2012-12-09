@@ -161,12 +161,12 @@ int Graph::size ( ) {
 
 int Graph::nextPath ( int a, int b ) {
      if ( minPathTable[a][b] != 0 ) {
-          return 0;
+          return b;
      }
      int nextPath = -1;
      int minPath = -1;
      for ( int i = 0; i < size ( ); i ++ ) {
-          if ( minPathTable[a][i] != 0 && minPath < minPathTable[a][i]) {
+          if ( minPathTable[a][i] != 0 && i != a && minPath < minPathTable[a][i]) {
                minPath = minPathTable[a][i];
                nextPath = i;
           }
@@ -198,16 +198,17 @@ int Graph::findShortestPaths ( ) {
                     }
                }
                /*
+               //Uncomment this block to see shortestPath algorithm at work
+               //Look at the last iteration for the routing table
                cout<<"in the "<<k<<"th iteration, the result is:"<<endl;
                for(i = 0;i<n;i++) {
-                    cout << i+1 << " | ";
+                    cout << i << " | ";
                     for(j = 0;j<n;j++) {
-                         cout<<(minPathTable[i][j]==1?j+1:0)<<" ";
+                         cout<<(minPathTable[i][j]==1?j:0)<<" ";
                     }
                     cout<<endl;
                }
                */
-
           }
           return 1;
      } catch ( ... ) {
