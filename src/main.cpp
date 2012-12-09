@@ -58,5 +58,6 @@ int main ( int argc, char ** argv ) {
 
      cout << "Shortest Paths found." << endl;
 
+     graphRouter.send ( 1, 5 );
      return 0;
 }

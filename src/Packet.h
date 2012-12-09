@@ -12,7 +12,7 @@ class Packet {
 		int getSource ( );
 		int getDestination ( );
 		int getSize ( );
-		
+
 	private:
 		int source, destination, size;
 };
