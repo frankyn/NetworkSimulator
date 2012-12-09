@@ -19,11 +19,18 @@ class GraphRouter : public Graph {
 		int getMinLostPackets ( );
 		int getAvgLostPackets ( );
 
+		float getAvgTransmissionTime ( );
+		float getMaxTransmissionTime ( );
+		float getMinTransmissionTime ( );
+
+		float getAveragePacketTransmission ( );
+
 		void run ( ); //Run each queue waiting in each NetworkNode
 	private:
 		int maxQueueSize;
 		int totalGeneratedPackets;
 		int totalSuccessfulPackets;
+		int totalTransmissionTime, maxTransmission, minTransmission;
 		Router * routers; //Holds all nodes and their queue's that transmit data.
 
 		void createRouters ( );

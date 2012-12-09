@@ -3,8 +3,15 @@
 GraphRouter::GraphRouter ( int maxQueue ) {
 	routers = NULL;
 	maxQueueSize = maxQueue;
+
+	//Packet generation variables
 	totalGeneratedPackets = 0;
 	totalSuccessfulPackets = 0;
+	
+	//Transmission tracking variables
+	totalTransmissionTime = 0;
+	maxTransmission = 0;
+	minTransmission = 0;
 }
 
 GraphRouter::~GraphRouter ( ) {
@@ -16,7 +23,7 @@ GraphRouter::~GraphRouter ( ) {
 */
 void GraphRouter::send ( int source , int destination ) {
 	createRouters ( );
-	
+
 	totalGeneratedPackets++;
 	//cout << "Added Packet to SOURCE ( " << source << " ) -> DESTINATION ( " << destination << " )" << endl; 
 	Packet p;
@@ -79,6 +86,34 @@ int GraphRouter::getAvgLostPackets ( ) {
 		totalLost += routers[i].getPacketsLost ( );
 	}
 	return totalLost;
+}
+
+/*
+	Calculate total transmission time for all possible packets
+*/
+float GraphRouter::getAveragePacketTransmission ( ) {
+	return totalTransmissionTime / totalGeneratedPackets;
+}
+
+/*
+	Get Avg Transmission time for all packets sent.
+*/
+float getAvgTransmissionTime ( ) {
+	return totalTransmissionTime / totalGeneratedPackets;
+}
+
+/*
+	Get Max Transmission time from all packets sent.
+*/
+float getMaxTransmissionTime ( ) {
+	return maxTransmission;
+}
+
+/*
+	Get Min Transmission time from all packets sent.
+*/
+float getMinTransmissionTime ( ) {
+	return minTransmission;
 }
 
 /*

@@ -79,14 +79,23 @@ int main ( int argc, char ** argv ) {
           }
           graphRouter.run ( );
      }
+
+     //Print out all gathered statistics
      cout << "Routing Statistics: " << endl;
      cout << "Total number of packets generated: " << graphRouter.getTotalGeneratedPackets ( ) << endl;
      cout << "Total number of packets that reached destination: " << graphRouter.getTotalSuccessfulPackets ( ) << endl;
-     cout << "Average packet transmission time for each transmission: " << endl;
+     
+     /*
+          We need to add in packet transmission time for each transmission but does that mean per packet?
+          I'm just going to print out average packet transmission time for all packets.
+     */
+     cout << "Average packet transmission time for each transmission: " << graphRouter.getAveragePacketTransmission ( ) << endl;
+      
+     //Print out completion time and dropped packet statistics.
      cout << "Time for completion for the transmissions: " << endl
-          << "Max: " << endl
-          << "Min: " << endl
-          << "Avg: " << endl;
+          << "Max: " << graphRouter.getMaxransmissionTime ( ) << endl
+          << "Min: " << graphRouter.getMinTransmissionTime ( ) << endl
+          << "Avg: " << graphRouter.getAvgTransmissionTime ( ) << endl;
 
      cout << "Number for packets dropped at a router: " << endl
           << "Max: " << graphRouter.getMaxLostPackets ( ) << endl
