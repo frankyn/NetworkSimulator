@@ -14,6 +14,7 @@ GraphIO::~GraphIO ( ) {
 */
 int GraphIO::read ( string filename ) {
      try {
+
           ifstream graphFile ( filename.c_str() );
           
           if(graphFile.is_open()){
@@ -32,7 +33,6 @@ int GraphIO::read ( string filename ) {
                          break;
                     }
                     setEdge ( i , b );
-                    setEdge ( b , i );
                }
                
                graphFile.close();
@@ -51,21 +51,23 @@ int GraphIO::read ( string filename ) {
 */
 int GraphIO::write ( string filename ) {
      try {
-          ofstream graphFile ( filename.c_str() );
-         
-          graphFile << size ( ) << " " << edges ( ) << endl; 
           
-          /*
-               Loop through graph and set each link possible
-          */
-          for ( int i = 0; i < size ( ); i++ ) {
-               for ( int b = i; b < size ( ); b++ ) {
-                    if ( getEdge ( i , b ) == 1) {
-                         graphFile << i << " " << b << endl;
+          ofstream graphFile ( filename.c_str() );
+          
+          if(graphFile.is_open()){
+               graphFile << size ( ) << " " << edges ( ) << endl; 
+               /*
+                    Loop through graph and set each link possible
+               */
+               for ( int i = 0; i < size ( ); i++ ) {
+                    for ( int b = i; b < size ( ); b++ ) {
+                         if ( getEdge ( i , b ) == 1) {
+                              graphFile << i << " " << b << endl;
+                         }
                     }
                }
+               graphFile.close ();
           }
-          graphFile.close ();
           return 1;
      } catch ( ... ) {
           return 0;
