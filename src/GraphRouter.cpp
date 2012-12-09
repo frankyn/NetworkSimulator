@@ -3,6 +3,7 @@
 GraphRouter::GraphRouter ( int maxQueue ) {
 	routers = NULL;
 	maxQueueSize = maxQueue;
+	totalGeneratedPackets = 0;
 }
 
 GraphRouter::~GraphRouter ( ) {
@@ -14,6 +15,7 @@ GraphRouter::~GraphRouter ( ) {
 */
 void GraphRouter::send ( int source , int destination ) {
 	createRouters ( );
+	totalGeneratedPackets++;
 	cout << "Added Packet to SOURCE ( " << source << " ) -> DESTINATION ( " << destination << " )" << endl; 
 	Packet p;
 	p.setPath ( source, destination );
@@ -23,10 +25,14 @@ void GraphRouter::send ( int source , int destination ) {
 }
 
 /*
-	Run this on each peice of data we received to a destination vertex
+	Add data
 */
-void GraphRouter::onReceive ( int source , int destination ) {
+int GraphRouter::getTotalGeneratedPackets ( ) {
+	return totalGeneratedPackets;
+}
 
+int GraphRouter::getTotalSuccessfulPackets ( ) {
+	return totalSuccessfulPackets;
 }
 
 /*
@@ -74,7 +80,7 @@ void GraphRouter::run ( ) {
 			tmp = routers [i].dequeueIncoming ( );
 			if ( i == tmp.getDestination ( ) ) {
 				//Packet made it to destination
-				
+				totalSuccessfulPackets++;
 				cout << "Packet made it to its destination" << endl;
 			} else {
 				//Packet still in transit push into outgoing queue

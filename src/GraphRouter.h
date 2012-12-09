@@ -11,11 +11,15 @@ class GraphRouter : public Graph {
 		~GraphRouter ( );
 		
 		void send ( int , int );
-		void onReceive ( int , int );
 
+		int getTotalGeneratedPackets ( );
+		int getTotalSuccessfulPackets ( );
+		
 		void run ( ); //Run each queue waiting in each NetworkNode
 	private:
 		int maxQueueSize;
+		int totalGeneratedPackets;
+		int totalSuccessfulPackets;
 		Router * routers; //Holds all nodes and their queue's that transmit data.
 
 		void createRouters ( );
