@@ -18,6 +18,8 @@ int main ( int argc, char ** argv ) {
      GraphRouter graphRouter; //We just want to reuse the graph so we will create a router based off its information once it's loaded in.
      GraphIO * graphIO = (GraphIO*)&graphRouter; //Use graphRouter Graph by typecasting it into GraphIO so we can use it to load in the file.
      
+     
+
      if ( !graphRouter.create ( 10 ) ) {
           cout << "Unable to create graph" << endl;
      }
@@ -51,6 +53,8 @@ int main ( int argc, char ** argv ) {
      
      cout << "Graph is completely connected " << fileName << "." <<endl;
 
+
+
      if ( !graphIO->findShortestPaths ( ) ) {
           cout << "Unable to find shortest paths" << endl;
           exit ( 0 );
@@ -58,6 +62,15 @@ int main ( int argc, char ** argv ) {
 
      cout << "Shortest Paths found." << endl;
 
-     graphRouter.send ( 1, 5 );
+     graphRouter.send ( 1, 3 );
+     
+     for ( int i = 0; i < 5; i++ ) {
+          graphRouter.run ( );
+     }
+
+     cout << "Completed" << endl;
+     graphIO = NULL;
+
+     exit ( 0 );
      return 0;
 }

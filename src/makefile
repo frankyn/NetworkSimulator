@@ -1,5 +1,5 @@
 CC=g++
-CFLAGS=-c -Wall -g
+CFLAGS=-c -Wall 
 EFLAGS=
 LDFLAGS= 
 SOURCES= main.cpp Graph.h Graph.cpp GraphIO.h GraphIO.cpp GraphRouter.h GraphRouter.cpp Router.h Router.cpp Packet.h Packet.cpp

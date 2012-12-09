@@ -16,8 +16,8 @@ void GraphRouter::send ( int source , int destination ) {
 	cout << "Added Packet to SOURCE ( " << source << " ) -> DESTINATION ( " << destination << " )" << endl; 
 	Packet p;
 	p.setPath ( source, destination );
-	p.setSize ( 10 );
-	routers [ source ].enqueuePacket ( p );
+	p.setSize ( rand() % 1001 );  // [ 0 , ( 1000 kilobits = 1mb ) ]
+	routers [ source ].enqueueIncoming ( p );
 }
 
 /*
@@ -34,7 +34,27 @@ void GraphRouter::onReceive ( int source , int destination ) {
 	If router bandwidth is too small for packet place on wait queue till it is completed and then switch the packet.
 */
 void GraphRouter::run ( ) {
+	int incomingSize = 0, outgoingSize = 0;
+	int nextRouter = -1;
+	Packet tmp;
+	for ( int i = 0 ; i < size ( ); i++ ) {
+		incomingSize = routers [ i ].sizeIn ( );
 
+		if ( incomingSize > 0 ) {
+			tmp = routers [i].dequeueIncoming ( );
+			nextRouter = nextPath ( i , tmp.getDestination ( ) );
+			cout << tmp.toString ( );
+			cout << "Next Router: " << nextRouter << endl;
+
+			if ( tmp.getDestination ( ) == nextRouter ) {
+				//Packet made it to destination
+				cout << "Packet made it to its destination" << endl;
+			} else {
+				//Packet still in transit push into next router.
+				routers [ nextRouter ].enqueueIncoming ( tmp );
+			}
+		}
+	}
 }
 
 /*
