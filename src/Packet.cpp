@@ -33,3 +33,10 @@ int Packet::getSize ( ) {
 	return size;
 }
 
+string Packet::toString ( ) {
+	stringstream info;
+	info << "Source: " << source << endl;
+	info << "Destination: " << destination << endl;
+	info << "Size: " << size << endl;
+	return info.str(); 
+}
