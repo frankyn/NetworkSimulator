@@ -18,7 +18,6 @@ void GraphRouter::send ( int source , int destination ) {
 	createRouters ( );
 	
 	totalGeneratedPackets++;
-	cout << "Added Packet to SOURCE ( " << source << " ) -> DESTINATION ( " << destination << " )" << endl; 
 	//cout << "Added Packet to SOURCE ( " << source << " ) -> DESTINATION ( " << destination << " )" << endl; 
 	Packet p;
 	p.setPath ( source, destination );
@@ -28,7 +27,6 @@ void GraphRouter::send ( int source , int destination ) {
 }
 
 /*
-	Add data
 	Statistics on all the network transfers
 */
 
@@ -129,7 +127,6 @@ void GraphRouter::run ( ) {
 			if ( i == tmp.getDestination ( ) ) {
 				//Packet made it to destination
 				totalSuccessfulPackets++;
-				cout << "Packet made it to its destination" << endl;
 				//cout << "Packet made it to its destination" << endl;
 			} else {
 				//Packet still in transit push into outgoing queue
