@@ -43,6 +43,16 @@ void Router::enqueueOutgoing ( Packet p ) {
 }
 
 /*
+	Add Packet to wire queue
+	The wire queue holds packets that are suppose be in STATE = transmission.
+	This give us the simulation that the packet hasn't arrived to the next router yet.
+	##This queue has no limit of size.
+*/
+void Router::enqueueWire ( Packet p ) {
+	wire.push ( p );
+}
+
+/*
 	Remove packet from incoming packets
 */
 Packet Router::dequeueIncoming ( ) {
@@ -60,6 +70,17 @@ Packet Router::dequeueOutgoing ( ) {
 	p = outgoing.front ( );
 	outgoing.pop ( );
 	return p;
+}
+
+/*
+	Search wire queue to see if any packets have simulated wait time and return those as a list
+*/
+list<Packet> Router::dequeueWire( ) {
+	list<Packet> transmittedPackets;
+	/*
+		Do calculation to fill this list with packets that have finished delay.
+	*/
+	return transmittedPackets;
 }
 
 /*

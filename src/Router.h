@@ -1,5 +1,6 @@
 //Include davids stuff here
 #include <queue>
+#include <list>
 #include "Packet.h"
 
 #ifndef ROUTER_HEADER
@@ -16,9 +17,11 @@ class Router {
 
 		void enqueueIncoming ( Packet );
 		void enqueueOutgoing ( Packet );
+		void enqueueWire ( Packet );
 
 		Packet dequeueIncoming ( );
 		Packet dequeueOutgoing ( );
+		list<Packet> dequeueWire ( );
 
 		int sizeOut ( );
 		int sizeIn ( );
@@ -31,8 +34,10 @@ class Router {
 	private:
 		int bandwidth, delay;
 		int maxQueueSize;
+
 		queue<Packet> incoming;
 		queue<Packet> outgoing;
+		queue<Packet> wire;
 };
 
 

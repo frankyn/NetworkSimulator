@@ -38,8 +38,18 @@ void GraphRouter::run ( ) {
 	int incomingSize = 0, outgoingSize = 0;
 	int nextRouter = -1;
 	Packet tmp;
+	list<Packet> wireReadyPackets;
 	for ( int i = 0 ; i < size ( ); i++ ) {
 
+		//Try and get packets that have finished off their delay waiting within the wireQueue within the Router class.
+		wireReadyPackets = routers [i].dequeueWire ( );
+		//If there are any wireReadyPackets send them all to their next destinations.
+		while ( wireReadyPackets.size ( ) > 0 ) {
+			tmp = wireReadyPackets.front ( );
+			wireReadyPackets.pop_front ( );
+			nextRouter = nextPath ( i, tmp.getDestination ( ) );
+			routers [ nextRouter ].enqueueIncoming ( tmp );			
+		}
 
 		//Outgoing Packets are waiting to be send out
 		outgoingSize = routers [ i ].sizeOut ( );
