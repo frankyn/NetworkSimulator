@@ -21,7 +21,7 @@ int main ( int argc, char ** argv ) {
      
      
 
-     if ( !graphRouter.create ( 10 ) ) {
+     if ( !graphRouter.create ( 150 ) ) {
           cout << "Unable to create graph" << endl;
      }
      
@@ -63,13 +63,38 @@ int main ( int argc, char ** argv ) {
 
      cout << "Shortest Paths found." << endl;
 
-     graphRouter.send ( 1, 3 );
-     
-     for ( int i = 0; i < 5; i++ ) {
+     /*
+          Randomly Select 20 source / destination pairs in the network and transmit create packets to transmit.
+          Run for : 1000 seconds // 0 -> 1000 while i = 0 and i < 1000
+          Total number of packets generated // need a counter for this.
+          Total number of packets that reached destination
+          Average packet transmission time for each transmission
+          Max, min, and avg time for completion for the transmissions
+          Max, min, and avg number of packets dropped at a router.
+     */
+
+     for ( int i = 0 ; i < 1000 ; i++ ) {
+          for ( int p = 0 ; p < 20 ; p++ ) {
+              graphRouter.send ( rand() % ( graphRouter.size ( ) + 1 ) , rand() % ( graphRouter.size ( ) + 1 ) );
+          }
+           
           graphRouter.run ( );
      }
+     cout << "Routing Statistics: " << endl;
+     cout << "Total number of packets generated: " << graphRouter.getTotalGeneratedPackets ( ) << endl;
+     cout << "Total number of packets that reached destination: " << graphRouter.getTotalSuccessfulPackets ( ) << endl;
+     cout << "Average packet transmission time for each transmission: " << endl;
+     cout << "Time for completion for the transmissions: " << endl
+          << "Max: " << endl
+          << "Min: " << endl
+          << "Avg: " << endl;
 
-     cout << "Completed" << endl;
+     cout << "Number for packets dropped at a router: " << endl
+          << "Max: " << endl
+          << "Min: " << endl
+          << "Avg: " << endl;
+     
+
      graphIO = NULL;
 
      exit ( 0 );
