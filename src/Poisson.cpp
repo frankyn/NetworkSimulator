@@ -1,3 +1,6 @@
+#ifndef POISSON_FORMULA
+#define POISSON_FORMULA
+
 double poissonFormula(double k){
  
   double e=2.71828;
@@ -24,3 +27,5 @@ double poissonFormula(double k){
 
   return answer;
 }//end formula
+
+#endif

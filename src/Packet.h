@@ -16,7 +16,7 @@ class Packet {
 		int getSize ( );
 
 		string toString ( );
-
+		
 	private:
 		int source, destination, size;
 };

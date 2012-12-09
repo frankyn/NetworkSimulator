@@ -28,7 +28,7 @@ void GraphRouter::send ( int source , int destination ) {
 	//cout << "Added Packet to SOURCE ( " << source << " ) -> DESTINATION ( " << destination << " )" << endl; 
 	Packet p;
 	p.setPath ( source, destination );
-	p.setSize ( rand() % 1001 );  // [ 0 , ( 1000 kilobits = 1mb ) ]
+	p.setSize ( rand() % 1001  );  // [ 0 , ( 1000 kilobits = 1mb ) ]
 	//need to use Poisson distrubution here...
 	routers [ source ].enqueueIncoming ( p );
 }
@@ -98,21 +98,21 @@ float GraphRouter::getAveragePacketTransmission ( ) {
 /*
 	Get Avg Transmission time for all packets sent.
 */
-float getAvgTransmissionTime ( ) {
+float GraphRouter::getAvgTransmissionTime ( ) {
 	return totalTransmissionTime / totalGeneratedPackets;
 }
 
 /*
 	Get Max Transmission time from all packets sent.
 */
-float getMaxTransmissionTime ( ) {
+float GraphRouter::getMaxTransmissionTime ( ) {
 	return maxTransmission;
 }
 
 /*
 	Get Min Transmission time from all packets sent.
 */
-float getMinTransmissionTime ( ) {
+float GraphRouter::getMinTransmissionTime ( ) {
 	return minTransmission;
 }
 
@@ -126,15 +126,14 @@ void GraphRouter::run ( ) {
 	int incomingSize = 0, outgoingSize = 0;
 	int nextRouter = -1;
 	Packet tmp;
-	list<Packet> wireReadyPackets;
+	PacketQueue wireReadyPackets;
 	for ( int i = 0 ; i < size ( ); i++ ) {
 
 		//Try and get packets that have finished off their delay waiting within the wireQueue within the Router class.
-		wireReadyPackets = routers [i].dequeueWire ( );
+		routers [i].dequeueWire ( wireReadyPackets );
 		//If there are any wireReadyPackets send them all to their next destinations.
 		while ( wireReadyPackets.size ( ) > 0 ) {
-			tmp = wireReadyPackets.front ( );
-			wireReadyPackets.pop_front ( );
+			wireReadyPackets.pop ( tmp );
 			nextRouter = nextPath ( i, tmp.getDestination ( ) );
 			routers [ nextRouter ].enqueueIncoming ( tmp );			
 		}

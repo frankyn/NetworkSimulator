@@ -47,7 +47,6 @@ void Router::enqueueOutgoing ( Packet p ) {
 		outgoing.push ( p );
 	} else {
 		totalLost ++;
-		cout << "LOST" << endl;
 	}
 }
 
@@ -66,8 +65,7 @@ void Router::enqueueWire ( Packet p ) {
 */
 Packet Router::dequeueIncoming ( ) {
 	Packet p;
-	p = incoming.front ( );
-	incoming.pop ( );
+	incoming.pop ( p );
 	return p;
 }
 
@@ -76,8 +74,7 @@ Packet Router::dequeueIncoming ( ) {
 */
 Packet Router::dequeueOutgoing ( ) {
 	Packet p;
-	p = outgoing.front ( );
-	outgoing.pop ( );
+	outgoing.pop ( p );
 	totalTransmitted ++;
 	return p;
 }
@@ -85,12 +82,10 @@ Packet Router::dequeueOutgoing ( ) {
 /*
 	Search wire queue to see if any packets have simulated wait time and return those as a list
 */
-list<Packet> Router::dequeueWire( ) {
-	list<Packet> transmittedPackets;
+void Router::dequeueWire( PacketQueue &list ) {
 	/*
 		Do calculation to fill this list with packets that have finished delay.
 	*/
-	return transmittedPackets;
 }
 
 /*
