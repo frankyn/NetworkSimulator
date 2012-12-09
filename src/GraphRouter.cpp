@@ -152,7 +152,7 @@ void GraphRouter::run ( ) {
 */
 void GraphRouter::createRouters ( ) {
 	//Clear out routers if it allocated space previously.
-	clearRouters ( );
+	
 	
 	if ( !routers ) {
 		routers = new Router [ size ( ) ];
