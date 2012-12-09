@@ -3,6 +3,7 @@
 Router::Router ( ) {
 	bandwidth = 0;
 	delay = 0;
+	maxQueueSize = 0;
 }
 
 Router::~Router ( ) {
@@ -10,17 +11,35 @@ Router::~Router ( ) {
 }
 
 /*
+	Set max queue size for the routers incoming and outgoing queues.
+*/
+void Router::setQueueSize ( int size ) {
+	maxQueueSize = size;
+}
+
+/*
+	Get max queue size for the routers incoming and outgoing queues.
+*/
+int Router::getQueueSize ( ) {
+	return maxQueueSize;
+}
+
+/*
 	Add Packet to incoming packets
 */
 void Router::enqueueIncoming ( Packet p ) {
-	incoming.push ( p );
+	if ( sizeIn ( ) < maxQueueSize ) {
+		incoming.push ( p );
+	}
 }
 
 /*
 	Add Packet to outgoing packets
 */
 void Router::enqueueOutgoing ( Packet p ) {
-	outgoing.push ( p );
+	if ( sizeOut ( ) < maxQueueSize ) {
+		outgoing.push ( p );
+	}
 }
 
 /*

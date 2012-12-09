@@ -15,7 +15,8 @@ int main ( int argc, char ** argv ) {
 
      srand ( atoi( seedNumber.c_str() ) );
 
-     GraphRouter graphRouter; //We just want to reuse the graph so we will create a router based off its information once it's loaded in.
+     //GraphRouter ( maxQueueSize for routers , )
+     GraphRouter graphRouter ( 30 ); //We just want to reuse the graph so we will create a router based off its information once it's loaded in.
      GraphIO * graphIO = (GraphIO*)&graphRouter; //Use graphRouter Graph by typecasting it into GraphIO so we can use it to load in the file.
      
      

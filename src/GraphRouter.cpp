@@ -1,7 +1,8 @@
 #include "GraphRouter.h"
 
-GraphRouter::GraphRouter ( ) {
+GraphRouter::GraphRouter ( int maxQueue ) {
 	routers = NULL;
+	maxQueueSize = maxQueue;
 }
 
 GraphRouter::~GraphRouter ( ) {
@@ -38,22 +39,44 @@ void GraphRouter::run ( ) {
 	int nextRouter = -1;
 	Packet tmp;
 	for ( int i = 0 ; i < size ( ); i++ ) {
-		incomingSize = routers [ i ].sizeIn ( );
 
-		if ( incomingSize > 0 ) {
-			tmp = routers [i].dequeueIncoming ( );
-			nextRouter = nextPath ( i , tmp.getDestination ( ) );
+
+		//Outgoing Packets are waiting to be send out
+		outgoingSize = routers [ i ].sizeOut ( );
+
+		if ( outgoingSize > 0 ) {
+			tmp = routers [i].dequeueOutgoing ( );
+			nextRouter = nextPath ( i, tmp.getDestination ( ) );
+			/*
+			//Next router #id
+			cout << "Switching Packet to Router #" << nextRouter << endl;
+			//Packet information
 			cout << tmp.toString ( );
-			cout << "Next Router: " << nextRouter << endl;
+			*/
+			routers [ nextRouter ].enqueueIncoming ( tmp );
+		}
 
-			if ( tmp.getDestination ( ) == nextRouter ) {
+		//Incoming Packets are waiting to be parsed 
+		incomingSize = routers [ i ].sizeIn ( );
+		if ( incomingSize > 0 ) {
+			//pop off next one in line.
+			tmp = routers [i].dequeueIncoming ( );
+			if ( i == tmp.getDestination ( ) ) {
 				//Packet made it to destination
+				
 				cout << "Packet made it to its destination" << endl;
 			} else {
-				//Packet still in transit push into next router.
-				routers [ nextRouter ].enqueueIncoming ( tmp );
+				//Packet still in transit push into outgoing queue
+
+				//Need to add delayed packets into outgoing queue
+				//Add check to make sure there is enough bandwidth for this packet to be sent to outgoing in one shot.
+
+				//Push packet into next router.
+				routers [ i ].enqueueOutgoing ( tmp );
 			}
 		}
+
+
 	}
 }
 
@@ -67,6 +90,9 @@ void GraphRouter::createRouters ( ) {
 	
 	if ( !routers ) {
 		routers = new Router [ size ( ) ];
+		for ( int i = 0; i < size ( ) ; i++ ) {
+			routers[i].setQueueSize ( maxQueueSize ) ;
+		}
 	}
 }
 

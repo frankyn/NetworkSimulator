@@ -11,6 +11,9 @@ class Router {
 		Router ( );
 		~Router ( );
 
+		void setQueueSize ( int );
+		int getQueueSize ( );
+
 		void enqueueIncoming ( Packet );
 		void enqueueOutgoing ( Packet );
 
@@ -27,6 +30,7 @@ class Router {
 		int getDelay ( );
 	private:
 		int bandwidth, delay;
+		int maxQueueSize;
 		queue<Packet> incoming;
 		queue<Packet> outgoing;
 };
