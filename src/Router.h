@@ -10,9 +10,11 @@ class Router {
 		Router ( );
 		~Router ( );
 
-		void enqueuePacket ( Packet );
-		Packet dequeuePacket ( );
-
+		void enqueueIncoming ( Packet );
+		void enqueueOutgoing ( Packet );
+		Packet dequeueIncoming ( );
+		Packet dequeueOutgoing ( );
+		
 		int sizeOut ( );
 		int sizeIn ( );
 	private:
