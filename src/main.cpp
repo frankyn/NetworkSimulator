@@ -89,9 +89,9 @@ int main ( int argc, char ** argv ) {
           << "Avg: " << endl;
 
      cout << "Number for packets dropped at a router: " << endl
-          << "Max: " << endl
-          << "Min: " << endl
-          << "Avg: " << endl;
+          << "Max: " << graphRouter.getMaxLostPackets ( ) << endl
+          << "Min: " << graphRouter.getMinLostPackets ( ) << endl
+          << "Avg: " << graphRouter.getAvgLostPackets ( ) << endl;
      
 
      graphIO = NULL;

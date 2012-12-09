@@ -4,6 +4,7 @@ GraphRouter::GraphRouter ( int maxQueue ) {
 	routers = NULL;
 	maxQueueSize = maxQueue;
 	totalGeneratedPackets = 0;
+	totalSuccessfulPackets = 0;
 }
 
 GraphRouter::~GraphRouter ( ) {
@@ -15,8 +16,10 @@ GraphRouter::~GraphRouter ( ) {
 */
 void GraphRouter::send ( int source , int destination ) {
 	createRouters ( );
+	
 	totalGeneratedPackets++;
 	cout << "Added Packet to SOURCE ( " << source << " ) -> DESTINATION ( " << destination << " )" << endl; 
+	//cout << "Added Packet to SOURCE ( " << source << " ) -> DESTINATION ( " << destination << " )" << endl; 
 	Packet p;
 	p.setPath ( source, destination );
 	p.setSize ( rand() % 1001 );  // [ 0 , ( 1000 kilobits = 1mb ) ]
@@ -26,13 +29,58 @@ void GraphRouter::send ( int source , int destination ) {
 
 /*
 	Add data
+	Statistics on all the network transfers
+*/
+
+/* 
+	return Total Generated Packets at the moment called.
 */
 int GraphRouter::getTotalGeneratedPackets ( ) {
 	return totalGeneratedPackets;
 }
 
+/*
+	return Total amount of packets that arrived at its destination.
+*/
 int GraphRouter::getTotalSuccessfulPackets ( ) {
 	return totalSuccessfulPackets;
+}
+
+/*
+	Find the most lost packets out of all of the routers.
+*/
+int GraphRouter::getMaxLostPackets ( ) {
+	int max = -1;
+	for ( int i = 0 ; i < size ( ) ; i++ ) {
+		if ( routers [i].getPacketsLost ( ) > max ) {
+			max = routers[i].getPacketsLost ( );
+		}
+	}
+	return max;
+}
+
+/* 
+	Find the least lost packets out of all of the routers.
+*/
+int GraphRouter::getMinLostPackets ( ) {
+	int min = INT_MAX;
+	for ( int i = 0 ; i < size ( ) ; i++ ) {
+		if ( routers [i].getPacketsLost ( ) < min ) {
+			min = routers[i].getPacketsLost ( );
+		}
+	}
+	return min;
+}
+
+/*
+	Calculate total of lost packets and then return the average lost across all routers.
+*/
+int GraphRouter::getAvgLostPackets ( ) {
+	int totalLost = 0;
+	for ( int i = 0 ; i < size ( ) ; i++ ) {
+		totalLost += routers[i].getPacketsLost ( );
+	}
+	return totalLost;
 }
 
 /*
@@ -82,6 +130,7 @@ void GraphRouter::run ( ) {
 				//Packet made it to destination
 				totalSuccessfulPackets++;
 				cout << "Packet made it to its destination" << endl;
+				//cout << "Packet made it to its destination" << endl;
 			} else {
 				//Packet still in transit push into outgoing queue
 

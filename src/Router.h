@@ -1,6 +1,7 @@
 //Include davids stuff here
 #include <queue>
 #include <list>
+#include <iostream>
 #include "Packet.h"
 
 #ifndef ROUTER_HEADER
@@ -31,8 +32,14 @@ class Router {
 
 		int getBandwidth ( );
 		int getDelay ( );
+
+		float getAvgLost ( );
+		int getPacketsLost ( );
+
+
 	private:
 		int bandwidth, delay;
+		int totalTransmitted, totalLost;
 		int maxQueueSize;
 
 		queue<Packet> incoming;

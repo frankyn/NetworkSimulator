@@ -4,6 +4,10 @@ Router::Router ( ) {
 	bandwidth = 0;
 	delay = 0;
 	maxQueueSize = 0;
+
+	//Keep track of all packet switching and packets lost because queue was too big.
+	totalTransmitted = 0;
+	totalLost = 0;
 }
 
 Router::~Router ( ) {
@@ -30,6 +34,10 @@ int Router::getQueueSize ( ) {
 void Router::enqueueIncoming ( Packet p ) {
 	if ( sizeIn ( ) < maxQueueSize ) {
 		incoming.push ( p );
+		cout << "MADE IT" << sizeIn ( ) << endl;
+	} else {
+		totalLost ++;
+		cout << "LOST" << endl;
 	}
 }
 
@@ -39,6 +47,9 @@ void Router::enqueueIncoming ( Packet p ) {
 void Router::enqueueOutgoing ( Packet p ) {
 	if ( sizeOut ( ) < maxQueueSize ) {
 		outgoing.push ( p );
+	} else {
+		totalLost ++;
+		cout << "LOST" << endl;
 	}
 }
 
@@ -69,6 +80,7 @@ Packet Router::dequeueOutgoing ( ) {
 	Packet p;
 	p = outgoing.front ( );
 	outgoing.pop ( );
+	totalTransmitted ++;
 	return p;
 }
 
@@ -112,4 +124,12 @@ int Router::getBandwidth ( ) {
 
 int Router::getDelay ( ) {
 	return delay;
+}
+
+float Router::getAvgLost ( ) {
+	return totalLost/totalTransmitted;
+}
+
+int Router::getPacketsLost ( ) {
+	return totalLost;
 }

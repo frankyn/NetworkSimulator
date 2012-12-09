@@ -14,7 +14,11 @@ class GraphRouter : public Graph {
 
 		int getTotalGeneratedPackets ( );
 		int getTotalSuccessfulPackets ( );
-		
+
+		int getMaxLostPackets ( );
+		int getMinLostPackets ( );
+		int getAvgLostPackets ( );
+
 		void run ( ); //Run each queue waiting in each NetworkNode
 	private:
 		int maxQueueSize;
