@@ -35,7 +35,7 @@ int Graph::create ( int nodes ) {
                minPathTable[i] = new int[graphNodes];    
                for ( int b = 0; b < graphNodes; b++ ) {
                     graphTable[i][b] = 0;
-                    minPathTable[i][b] = 0;
+                    minPathTable[i][b] = INT_MAX;
                }
           }
           
@@ -49,15 +49,32 @@ int Graph::create ( int nodes ) {
      Will set an edge in the graphTable;
 */
 void Graph::setEdge ( int from , int to ) {
-     graphEdges++;
+     if ( !graphTable[from][to] ) {
+          graphEdges++;
+     }
      graphTable[from][to] = 1;
      graphTable[to][from] = 1;
+
 }
+
+/*
+     Will set an edge with a weight
+*/
+void Graph::setEdge ( int from, int to, int weight ) {
+     if ( !graphTable[from][to] ) {
+          graphEdges++;
+     }
+     graphTable[from][to] = weight;
+     graphTable[to][from] = weight;    
+}
+
 /*
      Remove an edge between from and to
 */
 void Graph::removeEdge ( int from , int to ) {
-     graphEdges--;
+     if ( graphTable[from][to] ) {
+         graphEdges--;
+     }
      graphTable[from][to] = 0;
      graphTable[to][from] = 0;
 }
@@ -65,7 +82,7 @@ void Graph::removeEdge ( int from , int to ) {
      Check if there is an edge between FROM->TO
 */
 int Graph::getEdge ( int from , int to ) {
-     return graphTable[from][to]==1;
+     return graphTable[from][to];
 }
 
 /*
@@ -79,7 +96,7 @@ int Graph::generateEdges ( ) {
                     /*
                          Run random to figure out if we set an edge at this location and then flip indexes to set it for both nodes 
                     */
-                    if ( i != b && getEdge ( i , b ) ) {
+                    if ( i != b ) {
                          if ( rand () % 2 ) {
                               setEdge ( i , b );
                          } else {
@@ -129,7 +146,7 @@ int Graph::clear ( ) {
      Get Graph Edge count
 */
 int Graph::edges ( ) {
-     return edges ( );
+     return graphEdges;
 }
 /*
      Get Graph Size
@@ -139,22 +156,85 @@ int Graph::size ( ) {
 }
 
 /*
+     Get Next Path from Source to Destination based on minPathTable
+*/
+
+int Graph::nextPath ( int a, int b ) {
+     if ( minPathTable[a][b] != 0 ) {
+          return 0;
+     }
+     int nextPath = -1;
+     int minPath = -1;
+     for ( int i = 0; i < size ( ); i ++ ) {
+          if ( minPathTable[a][i] != 0 && minPath < minPathTable[a][i]) {
+               minPath = minPathTable[a][i];
+               nextPath = i;
+          }
+     }
+     return nextPath;
+}
+
+/*
+     Run Shortest path algorithm on entire graph
+*/
+int Graph::findShortestPaths ( ) {
+     try {
+          int i,j,k,n = size ( );
+
+          for(k = 0;k<n;k++) {
+               for(i = 0;i<n;i++) {
+                    for(j = 0;j<n;j++) {
+                         if(graphTable[i][k]!=INT_MAX && graphTable[k][j] != INT_MAX)
+                              
+                              if ( minPathTable[i][j] > graphTable[i][k] + graphTable[k][j] ) {
+                                   minPathTable[i][j] = graphTable[i][k] + graphTable[k][j];
+                              } else {
+                                   minPathTable[i][j] = graphTable[i][j];
+                              }
+
+                              
+                         else
+                              minPathTable[i][j] = graphTable[i][j];
+                    }
+               }
+               /*
+               cout<<"in the "<<k<<"th iteration, the result is:"<<endl;
+               for(i = 0;i<n;i++) {
+                    cout << i+1 << " | ";
+                    for(j = 0;j<n;j++) {
+                         cout<<(minPathTable[i][j]==1?j+1:0)<<" ";
+                    }
+                    cout<<endl;
+               }
+               */
+
+          }
+          return 1;
+     } catch ( ... ) {
+          return 0;
+     }
+}
+
+/*
      Runs a check on every possible vertex to make sure it can reach everyother vertex.
 */
 int Graph::checkConnectivity ( ) {
-     int * graphCheck = new int[graphNodes];
-     for ( int i = 0; i < graphNodes; i ++ ) {
-          graphCheck[i] = -1;
-     }
-     for ( int i = 0; i < graphNodes; i ++ ) {
-          checkLocation ( i , graphCheck );
-          if ( graphCheck[i] == 0 ) {
-               return 0;
+     try {
+          int * graphCheck = new int[graphNodes];
+          for ( int i = 0; i < graphNodes; i ++ ) {
+               graphCheck[i] = -1;
           }
+          for ( int i = 0; i < graphNodes; i ++ ) {
+               checkLocation ( i , graphCheck );
+               if ( graphCheck[i] == 0 ) {
+                    return 0;
+               }
+          }
+          delete [] graphCheck;
+          return 1;
+     } catch ( ... ) {
+          return 0;
      }
-     delete [] graphCheck;
-
-     return 1;
 }
 
 /*
@@ -168,9 +248,6 @@ void Graph::checkLocation ( int from , int *&graphCheck ) {
           if ( v == from ) continue;
           if ( getEdge ( from , v ) == 1 && graphCheck[v] == -1 ) {
                edge = 1;
-               if ( minPathTable[from][v] == 0 ) {
-                    minPathTable[from][v] = 1;
-               }
                checkLocation ( v , graphCheck );
           } else
           if ( graphCheck[v] ==  1 ) {
