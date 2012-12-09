@@ -18,6 +18,7 @@ void GraphRouter::send ( int source , int destination ) {
 	Packet p;
 	p.setPath ( source, destination );
 	p.setSize ( rand() % 1001 );  // [ 0 , ( 1000 kilobits = 1mb ) ]
+	//need to use Poisson distrubution here...
 	routers [ source ].enqueueIncoming ( p );
 }
 
@@ -78,8 +79,8 @@ void GraphRouter::run ( ) {
 			} else {
 				//Packet still in transit push into outgoing queue
 
-				//Need to add delayed packets into outgoing queue
-				//Add check to make sure there is enough bandwidth for this packet to be sent to outgoing in one shot.
+				//!!!!!Need to add delayed packets into outgoing queue
+				//!!!!!Add check to make sure there is enough bandwidth for this packet to be sent to outgoing in one shot.
 
 				//Push packet into next router.
 				routers [ i ].enqueueOutgoing ( tmp );
@@ -102,6 +103,8 @@ void GraphRouter::createRouters ( ) {
 		routers = new Router [ size ( ) ];
 		for ( int i = 0; i < size ( ) ; i++ ) {
 			routers[i].setQueueSize ( maxQueueSize ) ;
+			routers[i].setBandwidth ( rand ( ) % 1001 ); //Bandwidth is set in kilobits ( 1000kbps = 1mbps )
+			routers[i].setDelay ( rand ( ) % 11 + 1 ); //Delay is in seconds
 		}
 	}
 }
