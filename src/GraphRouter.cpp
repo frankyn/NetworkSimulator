@@ -1,19 +1,19 @@
 #include "GraphRouter.h"
 
 GraphRouter::GraphRouter ( ) {
-	graphRoutes = NULL;
+	routers = NULL;
 }
 
 GraphRouter::~GraphRouter ( ) {
-	clearTable ( );
-	Graph::clear ( );
+	clearRouters ( );
 }
 
 /*
 	Add data to vertex queue so it can be send out on next transmission.
 */
 void GraphRouter::send ( int source , int destination , void * data ) {
-
+	createRouters ( );
+	nextPath ( source, destination );
 }
 
 /*
@@ -32,63 +32,24 @@ void GraphRouter::run ( ) {
 }
 
 /*
-	Create a table for routes, create NetworkNodes with queues, and then call findShortestPath ( );
+	Create a Router for ever node within the graph.
+	Size of routers array is based on the size ( ) of graph.
 */
-int GraphRouter::buildRouteTable ( ) {
-	try {
-		//create NetworkNodes
-		clearTable ( );
-		graphRoutes = new int* [ size ( ) ];
-		for ( int i = 0 ; i < size ( ) ; i++ ) {
-			graphRoutes[i] = new int [ size ( ) ];
-			for ( int b = 0 ; b < size ( ) ; b++ ) {
-				graphRoutes[i][b] = 0;
-			}
-		}
-		for ( int i = 0 ; i < size ( ); i++ ) {
-			for ( int b = i ; b < size ( ) ; b++ ) {
-				findShortestPath ( i, b );			
-			}
-		}
-		
-		return 1;
-	} catch ( bad_alloc& e ) {
-		cout << e.what ( ) << endl;
-		return 0;
+void GraphRouter::createRouters ( ) {
+	//Clear out routers if it allocated space previously.
+	clearRouters ( );
+	
+	if ( !routers ) {
+		routers = new Router [ size ( ) ];
 	}
 }
 
 /*
-	Clear out routing table, and NetworkNodes from memory
+	Clear out routers array from memory.
 */
-void GraphRouter::clearTable ( ) {
-	try {
-		
-		if ( graphRoutes ) {
-			
-			for ( int i = 0 ; i < size ( ) ; i++ ) {
-				delete [] graphRoutes[i];
-				graphRoutes[i] = NULL;
-			}
-			delete graphRoutes;
-			//delete NetworkNodes array
-			graphRoutes = NULL;
-		}
-	} catch ( exception& e ) {
-		cout << e.what ( ) << endl;
-		return;
+void GraphRouter::clearRouters ( ) {
+	if ( routers ) {
+		delete [] routers;
+		routers = NULL;
 	}
-}
-
-/*
-	Run shortest path algorithm from each vertex and find a path for each pair.
-	If we need to go through another node give node index + 2
-	EX: 0 = 2
-		1 = 3
-		2 = 4
-		3 = 5
-	That way we can avoid using memory locations
-*/
-void GraphRouter::findShortestPath ( int i , int b ) {
-
 }
