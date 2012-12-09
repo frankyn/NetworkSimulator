@@ -12,11 +12,11 @@ int main ( int argc, char ** argv ) {
      } 
      string seedNumber = argv[1];
      string fileName = argv[2];
-     srand ( atoi( seedNumber.c_str() ) );
-     
-     GraphIO graphIO;
-     GraphRouter * graphRouter = (GraphRouter*)&graphIO; //We just want to reuse the graph so we will create a router based off its information once it's loaded in.
 
+     srand ( atoi( seedNumber.c_str() ) );
+
+     GraphRouter graphRouter; //We just want to reuse the graph so we will create a router based off its information once it's loaded in.
+     GraphIO * graphIO = (GraphIO*)&graphRouter; //Use graphRouter Graph by typecasting it into GraphIO so we can use it to load in the file.
      
      /*
      if ( !graph.create ( 10 ) ) {
@@ -38,7 +38,7 @@ int main ( int argc, char ** argv ) {
      cout << "Graph was saved to " << fileName << endl;
      */
 
-     if ( !graphIO.read ( fileName ) ) {
+     if ( !graphIO->read ( fileName ) ) {
           cout << "Unable to read graph from " << fileName << endl;
           exit ( 0 );
      }
@@ -46,14 +46,23 @@ int main ( int argc, char ** argv ) {
      cout << "Graph was read from " << fileName <<endl;
     
 
-     if ( !graphIO.checkConnectivity ( ) ) {
-          cout << "Graph wasn't completely connected " << fileName <<endl;
+     if ( !graphIO->checkConnectivity ( ) ) {
+          cout << "Graph wasn't completely connected " << fileName << "." <<endl;
           exit ( 0 );
      }
+     
+     cout << "Graph is completely connected " << fileName << "." <<endl;
 
-     cout << "Graph is completely connected " << fileName <<endl;
+     if ( !graphRouter.buildRouteTable ( ) ) {
+          cout << "Routing Table wasn't created successfully." << endl;
+          exit ( 0 );
+     }
+     
+     cout << "Routing Table was created successfully based on graph data." << endl;
 
      
-     
+
+
+
      return 0;
 }

@@ -2,7 +2,7 @@ CC=g++
 CFLAGS=-c -Wall -g
 EFLAGS=
 LDFLAGS= 
-SOURCES= main.cpp Graph.h Graph.cpp GraphIO.h GraphIO.cpp
+SOURCES= main.cpp Graph.h Graph.cpp GraphIO.h GraphIO.cpp GraphRouter.h GraphRouter.cpp
 OBJECTS= $(SOURCES:.cpp=.o)
 EXECUTABLE= ../build/NetworkSimulator
 

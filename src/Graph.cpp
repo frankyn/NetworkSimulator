@@ -2,21 +2,25 @@
 
 Graph::Graph ( ) {
      graphTable = NULL;
+     minPathTable = NULL;
      graphNodes = 0;
      graphEdges = 0;
 }
 
 Graph::~Graph ( ) {
-     clear ();
+     clear ( );
 }
 
+/*
+     Create a graph based on the amount of verteces given.
+*/
 int Graph::create ( int nodes ) {
      try {
           /*
                We need to clear out any previous created graphTables
           */
           
-          //clear ( );
+          clear ( );
           
           /*
                Set graphNodes to nodes and reset graphEdges.
@@ -25,10 +29,13 @@ int Graph::create ( int nodes ) {
           graphNodes = nodes;
           
           graphTable = new int*[graphNodes];
+          minPathTable = new int*[graphNodes];
           for ( int i = 0; i < graphNodes; i++ ) {
-               graphTable[i] = new int[graphNodes];    
+               graphTable[i] = new int[graphNodes];
+               minPathTable[i] = new int[graphNodes];    
                for ( int b = 0; b < graphNodes; b++ ) {
                     graphTable[i][b] = 0;
+                    minPathTable[i][b] = 0;
                }
           }
           
@@ -92,15 +99,23 @@ int Graph::generateEdges ( ) {
 */
 int Graph::clear ( ) {
      try {
+          if ( !graphTable ) {
+               return 1;
+          }
+
           for ( int i = 0; i < graphNodes; i++ ) {
                if ( graphTable[i] ) {
                     delete [] graphTable[i];
+                    delete [] minPathTable[i];
                     graphTable[i] = NULL;
+                    minPathTable[i] = NULL;
                }
           }
           if ( graphTable ) {
                delete graphTable;
+               delete minPathTable;
                graphTable = NULL;
+               minPathTable = NULL;
           }
           graphNodes = 0;
           graphEdges = 0;
@@ -123,13 +138,15 @@ int Graph::size ( ) {
      return graphNodes;
 }
 
+/*
+     Runs a check on every possible vertex to make sure it can reach everyother vertex.
+*/
 int Graph::checkConnectivity ( ) {
      int * graphCheck = new int[graphNodes];
      for ( int i = 0; i < graphNodes; i ++ ) {
           graphCheck[i] = -1;
      }
      for ( int i = 0; i < graphNodes; i ++ ) {
-
           checkLocation ( i , graphCheck );
           if ( graphCheck[i] == 0 ) {
                return 0;
@@ -140,7 +157,10 @@ int Graph::checkConnectivity ( ) {
      return 1;
 }
 
-void Graph::checkLocation ( int from, int *&graphCheck ) {
+/*
+     DFS check to make sure we can attain every vertex in the possible graph.
+*/
+void Graph::checkLocation ( int from , int *&graphCheck ) {
      int edge = 0;
      graphCheck[from] = 0;
 
@@ -148,6 +168,9 @@ void Graph::checkLocation ( int from, int *&graphCheck ) {
           if ( v == from ) continue;
           if ( getEdge ( from , v ) == 1 && graphCheck[v] == -1 ) {
                edge = 1;
+               if ( minPathTable[from][v] == 0 ) {
+                    minPathTable[from][v] = 1;
+               }
                checkLocation ( v , graphCheck );
           } else
           if ( graphCheck[v] ==  1 ) {
@@ -157,6 +180,10 @@ void Graph::checkLocation ( int from, int *&graphCheck ) {
      graphCheck[from] = edge;
 }
 
+/*
+     Print out of all of the edges in the graph.
+     Looks like the graph print out that GraphIO can provide.
+*/
 string Graph::toString ( ) {
      stringstream outputParser;
      for ( int i = 0; i < graphNodes; i++ ) {

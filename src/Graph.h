@@ -28,10 +28,10 @@ class Graph {
           
           string toString ( );
      private:
-          int ** graphTable;
+          int ** graphTable, ** minPathTable;
           int graphNodes, graphEdges;
 
-          void checkLocation ( int, int*& );
+          void checkLocation ( int , int*& );
 };
 
 #endif

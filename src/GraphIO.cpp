@@ -9,6 +9,9 @@ GraphIO::~GraphIO ( ) {
 
 }
 
+/*
+     Read in ascii version of a graph.
+*/
 int GraphIO::read ( string filename ) {
      try {
           ifstream graphFile ( filename.c_str() );
