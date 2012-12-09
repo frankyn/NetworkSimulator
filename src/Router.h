@@ -1,4 +1,5 @@
 //Include davids stuff here
+#include "Packet.h"
 
 #ifndef ROUTER_HEADER
 #define ROUTER_HEADER
@@ -8,8 +9,13 @@ class Router {
 	public:
 		Router ( );
 		~Router ( );
+
+		void enqueuePacket ( Packet );
+		Packet dequeuePacket ( );
+
+		int sizeOut ( );
+		int sizeIn ( );
 	private:
-		
 
 };
 
