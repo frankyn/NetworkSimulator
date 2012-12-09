@@ -93,7 +93,7 @@ int main ( int argc, char ** argv ) {
       
      //Print out completion time and dropped packet statistics.
      cout << "Time for completion for the transmissions: " << endl
-          << "Max: " << graphRouter.getMaxransmissionTime ( ) << endl
+          << "Max: " << graphRouter.getMaxTransmissionTime ( ) << endl
           << "Min: " << graphRouter.getMinTransmissionTime ( ) << endl
           << "Avg: " << graphRouter.getAvgTransmissionTime ( ) << endl;
 
