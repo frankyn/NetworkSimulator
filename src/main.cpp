@@ -75,9 +75,8 @@ int main ( int argc, char ** argv ) {
 
      for ( int i = 0 ; i < 1000 ; i++ ) {
           for ( int p = 0 ; p < 20 ; p++ ) {
-              graphRouter.send ( rand() % ( graphRouter.size ( ) + 1 ) , rand() % ( graphRouter.size ( ) + 1 ) );
+              graphRouter.send ( rand() % ( graphRouter.size ( ) ) , rand() % ( graphRouter.size ( ) ) );
           }
-           
           graphRouter.run ( );
      }
      cout << "Routing Statistics: " << endl;
