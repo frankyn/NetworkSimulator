@@ -1,7 +1,8 @@
 #include "Router.h"
 
 Router::Router ( ) {
-
+	bandwidth = 0;
+	delay = 0;
 }
 
 Router::~Router ( ) {
@@ -12,14 +13,14 @@ Router::~Router ( ) {
 	Add Packet to incoming packets
 */
 void Router::enqueueIncoming ( Packet p ) {
-
+	incoming.push ( p );
 }
 
 /*
 	Add Packet to outgoing packets
 */
 void Router::enqueueOutgoing ( Packet p ) {
-
+	outgoing.push ( p );
 }
 
 /*
@@ -27,7 +28,8 @@ void Router::enqueueOutgoing ( Packet p ) {
 */
 Packet Router::dequeueIncoming ( ) {
 	Packet p;
-
+	p = incoming.front ( );
+	incoming.pop ( );
 	return p;
 }
 
@@ -36,7 +38,8 @@ Packet Router::dequeueIncoming ( ) {
 */
 Packet Router::dequeueOutgoing ( ) {
 	Packet p;
-
+	p = outgoing.front ( );
+	outgoing.pop ( );
 	return p;
 }
 
@@ -44,7 +47,7 @@ Packet Router::dequeueOutgoing ( ) {
 	Return size of outbound packets.
 */
 int Router::sizeOut ( ) {
-	return 0;
+	return outgoing.size ( );
 }
 
 /*
@@ -52,5 +55,21 @@ int Router::sizeOut ( ) {
 */
 
 int Router::sizeIn ( ) {
-	return 0;
+	return incoming.size ( );
+}
+
+void Router::setBandwidth ( int b ) {
+	bandwidth = b;
+}
+
+void Router::setDelay ( int d ) {
+	delay = d;
+}
+
+int Router::getBandwidth ( ) {
+	return bandwidth;
+}
+
+int Router::getDelay ( ) {
+	return delay;
 }
