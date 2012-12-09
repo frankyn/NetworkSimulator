@@ -34,10 +34,8 @@ int Router::getQueueSize ( ) {
 void Router::enqueueIncoming ( Packet p ) {
 	if ( sizeIn ( ) < maxQueueSize ) {
 		incoming.push ( p );
-		cout << "MADE IT" << sizeIn ( ) << endl;
 	} else {
 		totalLost ++;
-		cout << "LOST" << endl;
 	}
 }
 
