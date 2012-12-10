@@ -4,6 +4,7 @@ Packet::Packet ( ) {
 	source = -1;
 	destination = -1;
 	delay = 0;
+	timeOffset = 0;
 }
 
 Packet::~Packet ( ) {
@@ -26,6 +27,10 @@ void Packet::setDelay ( int d ) {
 	delay = d;
 }
 
+void Packet::setTime ( int t ) {
+	timeOffset = t;
+}
+
 int Packet::getSource ( ) {
 	return source;
 }
@@ -40,6 +45,10 @@ int Packet::getSize ( ) {
 
 int Packet::getDelay ( ) {
 	return delay;
+}
+
+int Packet::getTime ( ) {
+	return timeOffset;
 }
 
 string Packet::toString ( ) {

@@ -90,13 +90,13 @@ int main ( int argc, char ** argv ) {
           We need to add in packet transmission time for each transmission but does that mean per packet?
           I'm just going to print out average packet transmission time for all packets.
      */
-     cout << "Average packet transmission time for each transmission: " << graphRouter.getAveragePacketTransmission ( ) << endl;
+     //cout << "Average packet transmission time for each transmission: " << graphRouter.getAveragePacketTransmission ( ) << endl;
       
      //Print out completion time and dropped packet statistics.
      cout << "Time for completion for the transmissions: " << endl
-          << "Max: " << graphRouter.getMaxTransmissionTime ( ) << endl
-          << "Min: " << graphRouter.getMinTransmissionTime ( ) << endl
-          << "Avg: " << graphRouter.getAvgTransmissionTime ( ) << endl;
+          << "Max: " << graphRouter.getMaxTransmissionTime ( ) << " seconds" << endl
+          << "Min: " << graphRouter.getMinTransmissionTime ( ) << " seconds" << endl
+          << "Avg: " << graphRouter.getAvgTransmissionTime ( ) << " seconds" << endl;
 
      cout << "Number for packets dropped at a router: " << endl
           << "Max: " << graphRouter.getMaxLostPackets ( ) << endl

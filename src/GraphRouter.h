@@ -31,7 +31,7 @@ class GraphRouter : public Graph {
 		int maxQueueSize;
 		int totalGeneratedPackets;
 		int totalSuccessfulPackets;
-		int totalTransmissionTime, maxTransmission, minTransmission;
+		int totalTransmissionTime, totalTime, maxTransmission, minTransmission;
 		Router * routers; //Holds all nodes and their queue's that transmit data.
 
 		void createRouters ( );

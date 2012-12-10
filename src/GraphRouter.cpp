@@ -9,9 +9,10 @@ GraphRouter::GraphRouter ( int maxQueue ) {
 	totalSuccessfulPackets = 0;
 	
 	//Transmission tracking variables
+	totalTime = 0;
 	totalTransmissionTime = 0;
 	maxTransmission = 0;
-	minTransmission = 0;
+	minTransmission = INT_MAX;
 }
 
 GraphRouter::~GraphRouter ( ) {
@@ -92,14 +93,14 @@ int GraphRouter::getAvgLostPackets ( ) {
 	Calculate total transmission time for all possible packets
 */
 float GraphRouter::getAveragePacketTransmission ( ) {
-	return totalTransmissionTime / totalGeneratedPackets;
+	return totalTransmissionTime / totalTime;
 }
 
 /*
 	Get Avg Transmission time for all packets sent.
 */
 float GraphRouter::getAvgTransmissionTime ( ) {
-	return totalTransmissionTime / totalGeneratedPackets;
+	return totalTransmissionTime / totalTime;
 }
 
 /*
@@ -128,15 +129,25 @@ void GraphRouter::run ( ) {
 	int tmpDelay = 0;
 	Packet tmp;
 	PacketQueue wireReadyPackets;
+	totalTime++;
 	for ( int i = 0 ; i < size ( ); i++ ) {
 
 		//Try and get packets that have finished off their delay waiting within the wireQueue within the Router class.
 		routers [i].dequeueWire ( wireReadyPackets );
 		//If there are any wireReadyPackets send them all to their next destinations.
 		while ( wireReadyPackets.size ( ) > 0 ) {
+			if ( tmp.getTime ( ) > maxTransmission ) {
+				maxTransmission = tmp.getTime ( );
+			}
+			if ( tmp.getTime ( ) < minTransmission ) {
+				minTransmission = tmp.getTime ( );
+			}
+
+			totalTransmissionTime += tmp.getTime ( );
 			wireReadyPackets.pop ( tmp );
 			nextRouter = nextPath ( i, tmp.getDestination ( ) );
-			routers [ nextRouter ].enqueueIncoming ( tmp );			
+			routers [ nextRouter ].enqueueIncoming ( tmp );	
+
 		}
 
 		//Outgoing Packets are waiting to be send out
@@ -144,14 +155,30 @@ void GraphRouter::run ( ) {
 		tmp.reset ( );
 		if ( outgoingSize > 0 ) {
 			tmp = routers [i].dequeueOutgoing ( );
-			nextRouter = nextPath ( i, tmp.getDestination ( ) );
-			/*
-			//Next router #id
-			cout << "Switching Packet to Router #" << nextRouter << endl;
-			//Packet information
-			cout << tmp.toString ( );
-			*/
-			routers [ nextRouter ].enqueueIncoming ( tmp );
+			tmpDelay = tmp.getSize ( ) / routers [ i ].getBandwidth ( );
+			if ( tmpDelay > 0 ) {
+				//Sudo delay the packet into the wire queue of the router.
+				tmp.setDelay ( tmpDelay ); 
+				tmp.setTime ( tmp.getTime ( ) + tmpDelay );
+				routers [ i ].enqueueWire ( tmp ); 
+			} else {
+				if ( tmp.getTime () > maxTransmission ) {
+					maxTransmission = tmp.getTime ( );
+				}
+				if ( tmp.getTime ( ) < minTransmission ) {
+					minTransmission = tmp.getTime ( );
+				}
+
+				totalTransmissionTime += tmp.getTime ( );
+				nextRouter = nextPath ( i, tmp.getDestination ( ) );
+				/*
+				//Next router #id
+				cout << "Switching Packet to Router #" << nextRouter << endl;
+				//Packet information
+				cout << tmp.toString ( );
+				*/
+				routers [ nextRouter ].enqueueIncoming ( tmp );
+			}
 		}
 
 		//Incoming Packets are waiting to be parsed 
@@ -168,14 +195,8 @@ void GraphRouter::run ( ) {
 				//Packet still in transit push into outgoing queue
 
 				//!!!!!Need to add delayed packets into outgoing queue
-				tmpDelay = tmp.getSize ( ) / routers [ i ].getBandwidth ( );
-				if ( tmpDelay > 0 ) {
-					tmp.setDelay ( tmpDelay ); 
-					routers [ i ].enqueueWire ( tmp ); 
-				} else {
-					//Push packet into next router.
-					routers [ i ].enqueueOutgoing ( tmp );
-				}
+				//Push packet into next router.
+				routers [ i ].enqueueOutgoing ( tmp );
 			}
 		}
 
@@ -189,8 +210,6 @@ void GraphRouter::run ( ) {
 */
 void GraphRouter::createRouters ( ) {
 	//Clear out routers if it allocated space previously.
-	
-	
 	if ( !routers ) {
 		routers = new Router [ size ( ) ];
 		for ( int i = 0; i < size ( ) ; i++ ) {
