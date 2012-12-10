@@ -12,8 +12,6 @@
 *.la
 *.a
 
-src/.DS_Store
-
-graph.txt
+*.DS_Store
 
 build/NetworkSimulator
