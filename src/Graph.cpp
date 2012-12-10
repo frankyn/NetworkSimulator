@@ -34,7 +34,7 @@ int Graph::create ( int nodes ) {
                graphTable[i] = new int[graphNodes];
                minPathTable[i] = new int[graphNodes];    
                for ( int b = 0; b < graphNodes; b++ ) {
-                    graphTable[i][b] = 0;
+                    graphTable[i][b] = INT_MAX;
                     minPathTable[i][b] = INT_MAX;
                }
           }
@@ -160,13 +160,13 @@ int Graph::size ( ) {
 */
 
 int Graph::nextPath ( int a, int b ) {
-     if ( minPathTable[a][b] != 0 ) {
+     if ( minPathTable[a][b] != INT_MAX ) {
           return b;
      }
      int nextPath = -1;
      int minPath = -1;
      for ( int i = 0; i < size ( ); i ++ ) {
-          if ( minPathTable[a][i] != 0 && i != a && minPath < minPathTable[a][i]) {
+          if ( minPathTable[a][i] != INT_MAX && i != a && minPath < minPathTable[a][i]) {
                minPath = minPathTable[a][i];
                nextPath = i;
           }
@@ -223,7 +223,7 @@ int Graph::checkConnectivity ( ) {
      try {
           int * graphCheck = new int[graphNodes];
           for ( int i = 0; i < graphNodes; i ++ ) {
-               graphCheck[i] = -1;
+               graphCheck[i] = INT_MAX;
           }
           for ( int i = 0; i < graphNodes; i ++ ) {
                checkLocation ( i , graphCheck );
@@ -242,12 +242,12 @@ int Graph::checkConnectivity ( ) {
      DFS check to make sure we can attain every vertex in the possible graph.
 */
 void Graph::checkLocation ( int from , int *&graphCheck ) {
-     int edge = 0;
+     int edge = INT_MAX;
      graphCheck[from] = 0;
 
      for ( int v =  0; v < graphNodes; v++ ) {
           if ( v == from ) continue;
-          if ( getEdge ( from , v ) == 1 && graphCheck[v] == -1 ) {
+          if ( getEdge ( from , v ) == 1 && graphCheck[v] == INT_MAX ) {
                edge = 1;
                checkLocation ( v , graphCheck );
           } else
@@ -266,7 +266,7 @@ string Graph::toString ( ) {
      stringstream outputParser;
      for ( int i = 0; i < graphNodes; i++ ) {
           for ( int b = i; b < graphNodes; b++ ) {
-               if ( b != i && getEdge ( i , b ) >= 1 ) {
+               if ( b != i && getEdge ( i , b ) >= 0 ) {
                     outputParser << i << " " << b << " -> " << getEdge ( i , b ) << endl;
                }
           }
