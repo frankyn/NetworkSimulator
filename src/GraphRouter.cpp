@@ -125,6 +125,7 @@ float GraphRouter::getMinTransmissionTime ( ) {
 void GraphRouter::run ( ) {
 	int incomingSize = 0, outgoingSize = 0;
 	int nextRouter = -1;
+	int tmpDelay = 0;
 	Packet tmp;
 	PacketQueue wireReadyPackets;
 	for ( int i = 0 ; i < size ( ); i++ ) {
@@ -140,7 +141,7 @@ void GraphRouter::run ( ) {
 
 		//Outgoing Packets are waiting to be send out
 		outgoingSize = routers [ i ].sizeOut ( );
-
+		tmp.reset ( );
 		if ( outgoingSize > 0 ) {
 			tmp = routers [i].dequeueOutgoing ( );
 			nextRouter = nextPath ( i, tmp.getDestination ( ) );
@@ -155,6 +156,7 @@ void GraphRouter::run ( ) {
 
 		//Incoming Packets are waiting to be parsed 
 		incomingSize = routers [ i ].sizeIn ( );
+		tmp.reset ( );
 		if ( incomingSize > 0 ) {
 			//pop off next one in line.
 			tmp = routers [i].dequeueIncoming ( );
@@ -166,10 +168,14 @@ void GraphRouter::run ( ) {
 				//Packet still in transit push into outgoing queue
 
 				//!!!!!Need to add delayed packets into outgoing queue
-				//!!!!!Add check to make sure there is enough bandwidth for this packet to be sent to outgoing in one shot.
-
-				//Push packet into next router.
-				routers [ i ].enqueueOutgoing ( tmp );
+				tmpDelay = tmp.getSize ( ) / routers [ i ].getBandwidth ( );
+				if ( tmpDelay > 0 ) {
+					tmp.setDelay ( tmpDelay ); 
+					routers [ i ].enqueueWire ( tmp ); 
+				} else {
+					//Push packet into next router.
+					routers [ i ].enqueueOutgoing ( tmp );
+				}
 			}
 		}
 
@@ -190,7 +196,6 @@ void GraphRouter::createRouters ( ) {
 		for ( int i = 0; i < size ( ) ; i++ ) {
 			routers[i].setQueueSize ( maxQueueSize ) ;
 			routers[i].setBandwidth ( rand ( ) % 1001 ); //Bandwidth is set in kilobits ( 1000kbps = 1mbps )
-			routers[i].setDelay ( rand ( ) % 11 + 1 ); //Delay is in seconds
 		}
 	}
 }

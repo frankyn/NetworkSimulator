@@ -1,8 +1,6 @@
-//Include davids stuff here
-//#include <queue>
-//#include <list>
 #include <iostream>
-#include "Queue.cpp"
+#include <queue>
+#include "PacketQueue.h"
 #include "Packet.h"
 
 #ifndef ROUTER_HEADER
@@ -29,10 +27,8 @@ class Router {
 		int sizeIn ( );
 
 		void setBandwidth ( int );
-		void setDelay ( int );
 
 		int getBandwidth ( );
-		int getDelay ( );
 
 		float getAvgLost ( );
 		int getPacketsLost ( );
@@ -46,12 +42,6 @@ class Router {
 		PacketQueue incoming;
 		PacketQueue outgoing;
 		PacketQueue wire;
-
-		/*
-		queue<Packet> incoming;
-		queue<Packet> outgoing;
-		queue<Packet> wire;
-		*/
 
 };
 

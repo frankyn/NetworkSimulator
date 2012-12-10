@@ -10,15 +10,19 @@ class Packet {
 
 		void setPath ( int, int );
 		void setSize ( int );
+		void setDelay ( int );
 
 		int getSource ( );
 		int getDestination ( );
 		int getSize ( );
-
-		string toString ( );
+		int getDelay ( );
 		
+		string toString ( );
+
+		void reset ( );
+
 	private:
-		int source, destination, size;
+		int source, destination, size, delay;
 };
 
 #endif

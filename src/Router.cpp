@@ -2,7 +2,6 @@
 
 Router::Router ( ) {
 	bandwidth = 0;
-	delay = 0;
 	maxQueueSize = 0;
 
 	//Keep track of all packet switching and packets lost because queue was too big.
@@ -65,7 +64,9 @@ void Router::enqueueWire ( Packet p ) {
 */
 Packet Router::dequeueIncoming ( ) {
 	Packet p;
-	incoming.pop ( p );
+	if ( sizeIn() > 0 ) {
+		incoming.pop ( p );
+	}
 	return p;
 }
 
@@ -86,6 +87,25 @@ void Router::dequeueWire( PacketQueue &list ) {
 	/*
 		Do calculation to fill this list with packets that have finished delay.
 	*/
+	Packet p;
+	PacketQueue tmpList;	
+	while ( wire.size ( ) > 0 ) {
+		p.reset ( );
+		wire.pop ( p );
+		if ( ( p.getDelay ( ) - 1 ) == 0 ) {
+			p.setDelay ( 0 );
+			list.push ( p );
+		} else {
+			p.setDelay ( p.getDelay ( ) );
+			tmpList.push ( p );
+		}
+	}
+
+	while ( tmpList.size ( ) > 0 ) {
+		p.reset ( );
+		tmpList.pop ( p );
+		wire.push ( p );
+	}
 }
 
 /*
@@ -107,16 +127,8 @@ void Router::setBandwidth ( int b ) {
 	bandwidth = b;
 }
 
-void Router::setDelay ( int d ) {
-	delay = d;
-}
-
 int Router::getBandwidth ( ) {
 	return bandwidth;
-}
-
-int Router::getDelay ( ) {
-	return delay;
 }
 
 float Router::getAvgLost ( ) {

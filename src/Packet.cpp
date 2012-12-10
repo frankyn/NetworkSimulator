@@ -1,13 +1,14 @@
 #include "Packet.h"
 
 Packet::Packet ( ) {
-
+	source = -1;
+	destination = -1;
+	delay = 0;
 }
 
 Packet::~Packet ( ) {
 
 }
-
 /*
 	Set source and destination indexes for packet.
 	Kinda acts like a header.
@@ -19,6 +20,10 @@ void Packet::setPath ( int s , int d ) {
 
 void Packet::setSize ( int s ) {
 	size = s;
+}
+
+void Packet::setDelay ( int d ) {
+	delay = d;
 }
 
 int Packet::getSource ( ) {
@@ -33,10 +38,21 @@ int Packet::getSize ( ) {
 	return size;
 }
 
+int Packet::getDelay ( ) {
+	return delay;
+}
+
 string Packet::toString ( ) {
 	stringstream info;
 	info << "Source: " << source << endl;
 	info << "Destination: " << destination << endl;
 	info << "Size: " << size << endl;
 	return info.str(); 
+}
+
+void Packet::reset ( ) {
+	source = -1;
+	destination = -1;
+	size = -1;
+	delay = 0;
 }

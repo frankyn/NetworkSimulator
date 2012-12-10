@@ -20,7 +20,7 @@ int main ( int argc, char ** argv ) {
      GraphIO * graphIO = (GraphIO*)&graphRouter; //Use graphRouter Graph by typecasting it into GraphIO so we can use it to load in the file.
      
      
-
+     /*
      if ( !graphRouter.create ( 150 ) ) {
           cout << "Unable to create graph" << endl;
      }
@@ -37,7 +37,8 @@ int main ( int argc, char ** argv ) {
      }
      
      cout << "Graph was saved to " << fileName << endl;
-     
+
+     */
 
      if ( !graphIO->read ( fileName ) ) {
           cout << "Unable to read graph from " << fileName << endl;
@@ -75,7 +76,7 @@ int main ( int argc, char ** argv ) {
 
      for ( int i = 0 ; i < 1000 ; i++ ) {
           for ( int p = 0 ; p < 20 ; p++ ) {
-              graphRouter.send ( rand() % ( graphRouter.size ( ) ) , rand() % ( graphRouter.size ( ) ) );
+              graphRouter.send ( rand() % ( graphRouter.size ( ) ) + 1 , rand() % ( graphRouter.size ( ) ) + 1 );
           }
           graphRouter.run ( );
      }
