@@ -75,8 +75,27 @@ int main ( int argc, char ** argv ) {
      */
 
      for ( int i = 0 ; i < 1000 ; i++ ) {
-          for ( int p = 0 ; p < 20 ; p++ ) {
-              graphRouter.send ( rand() % ( graphRouter.size ( ) ) + 1 , rand() % ( graphRouter.size ( ) ) + 1 );
+          if ( ( rand() % 2 ) == 0 ) {
+              graphRouter.send ( 20 , 15 );
+              graphRouter.send ( 1 , 149 );
+              graphRouter.send ( 24 , 32 );
+              graphRouter.send ( 35 , 89 );
+              graphRouter.send ( 9 , 15 );
+              graphRouter.send ( 15 , 7 );
+              graphRouter.send ( 11 , 25 );
+              graphRouter.send ( 17 , 52 );
+              graphRouter.send ( 97 , 12 );
+              graphRouter.send ( 105 , 50 );
+              graphRouter.send ( 7 , 2 );
+              graphRouter.send ( 33 , 82 );
+              graphRouter.send ( 5 , 76 );
+              graphRouter.send ( 3 , 18 );
+              graphRouter.send ( 50 , 56 );
+              graphRouter.send ( 20 , 29 );
+              graphRouter.send ( 90 , 15 );
+              graphRouter.send ( 19 , 74 );
+              graphRouter.send ( 23 , 120 );
+              graphRouter.send ( 115 , 145 );
           }
           graphRouter.run ( );
      }
